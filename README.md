@@ -62,15 +62,18 @@ CREATE → RENDER / SCREENSHOT → OBSERVE → UNDERSTAND → FIND REFERENCES
 │   ├── templates/
 │   │   └── verification-report.md        # Fill-in report template
 │   └── examples/
-│       ├── tree-evaluation.md            # Organic asset, 2 iterations, PASS
-│       ├── vehicle-evaluation.md         # Multi-view, reference reconstruction
-│       ├── character-evaluation.md       # Level 2 evidence, anatomy weights
-│       └── game-scene-evaluation.md      # Scene context, redistributed weights
+│       ├── tree-evaluation.md            # Organic asset, 2 iterations, 5.2 -> 7.4 PASS
+│       ├── vehicle-evaluation.md         # Multi-view, reference reconstruction, 6.2 -> 7.6 PASS
+│       ├── character-evaluation.md       # Level 2 evidence, anatomy weights, 5.6 -> 7.9 PASS
+│       ├── game-scene-evaluation.md      # Scene context, redistributed weights, 7.6 PASS
+│       ├── ui-evaluation.md              # Game UI capture, readability-led weights, 6.6 REWORK
+│       └── animation-evaluation.md       # Walk-cycle frames, temporal checks, 6.4 -> 7.5 PASS
 ├── scripts/
 │   └── validate_verification.py          # Validates JSON results + markdown reports
-└── tests/
-    ├── README.md
-    └── fixtures/                         # valid-* (must pass) / invalid-* (must fail)
+├── tests/
+│   ├── README.md
+│   └── fixtures/                         # valid-* (must pass) / invalid-* (must fail)
+└── .github/workflows/self-test.yml       # CI: runs the validator self-test on push/PR
 ```
 
 ## Using the skill
@@ -98,6 +101,9 @@ python3 scripts/validate_verification.py --report assets/examples/tree-evaluatio
 # Run the full self-test (fixtures + all example reports)
 python3 scripts/validate_verification.py --self-test
 ```
+
+The self-test also runs in CI on every push and pull request
+(`.github/workflows/self-test.yml`).
 
 The validator is dependency-free (Python 3.8+ standard library). Consistency checks
 include: weights sum to 1, stated score matches the weighted math minus penalties,

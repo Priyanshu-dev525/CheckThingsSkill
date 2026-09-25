@@ -277,7 +277,7 @@ contents.
 1. **Markdown report** using `assets/templates/verification-report.md` — Result, Category Scores table, What Is Working, Problems (severity/evidence/area/cause/fix), Reference Comparison (Observed / Reference-supported / Inferred / Differences), Required Changes, Verification Decision.
 2. **Machine-readable JSON** conforming to `schemas/visual-verification.schema.json`. Validate with `scripts/validate_verification.py` when a runtime is available.
 
-Worked examples (tree, vehicle, character, game scene): `assets/examples/`.
+Worked examples (tree, vehicle, character, game scene, UI screen, animation frames): `assets/examples/`.
 
 ---
 
@@ -299,6 +299,6 @@ Worked examples (tree, vehicle, character, game scene): `assets/examples/`.
 | `references/multi-screenshot.md` | View sets, merging evidence, video frames. |
 | `references/sub-agents.md` | Optional delegation architecture and contracts. |
 | `assets/templates/verification-report.md` | Fill-in report template. |
-| `assets/examples/*.md` | Four worked evaluations. |
+| `assets/examples/*.md` | Six worked evaluations. |
 | `scripts/validate_verification.py` | Validates JSON results and markdown reports; self-test. |
 | `tests/fixtures/*.json` | Valid/invalid fixtures for the validator. |

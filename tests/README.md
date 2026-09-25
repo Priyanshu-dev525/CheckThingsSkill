@@ -20,7 +20,8 @@ Run the whole suite (fixtures + the four worked example reports in
 python3 scripts/validate_verification.py --self-test
 ```
 
-Expected output ends with `SELF-TEST PASSED` and exit code 0.
+Expected output ends with `SELF-TEST PASSED` and exit code 0. The same command runs
+in CI on every push and pull request (`.github/workflows/self-test.yml`).
 
 Ad-hoc usage:
 
