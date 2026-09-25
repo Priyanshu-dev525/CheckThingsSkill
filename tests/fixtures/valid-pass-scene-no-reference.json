@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "asset": "low-poly floating-island game scene",
+  "task_summary": "Compose a low-poly floating-island scene with a main island, waterfall, and 3 satellite islands, readable as a game environment establishing shot, stylized pastel palette.",
+  "status": "pass",
+  "score": 7.6,
+  "threshold": 7.0,
+  "iteration": 1,
+  "max_iterations": 5,
+  "evidence_level": "level_1_screenshot_only",
+  "views_analyzed": ["establishing view", "gameplay camera"],
+  "categories": {
+    "silhouette": 7.5,
+    "proportions": 8.0,
+    "structure": 7.5,
+    "geometry": 7.0,
+    "materials": 7.5,
+    "style": 7.5,
+    "composition": 8.0
+  },
+  "weights": {
+    "silhouette": 0.15,
+    "proportions": 0.10,
+    "structure": 0.20,
+    "geometry": 0.10,
+    "materials": 0.10,
+    "style": 0.10,
+    "composition": 0.25
+  },
+  "custom_weights_rationale": "Readability-first scene brief: composition leads (.25), structure follows (.20). reference_similarity removed (original scene, no canonical target) and its weight redistributed.",
+  "not_evaluable": ["reference_similarity"],
+  "penalties": [],
+  "problems": [
+    {
+      "severity": "medium",
+      "category": "composition",
+      "issue": "Rightmost background satellite competes with the focal island (same value family, ~55% of hero size)",
+      "evidence": "OBSERVED: at 25% shrink the eye flickers between the right satellite and the main island",
+      "affected_area": "right-mid background",
+      "likely_cause": "satellites authored at the hero's value/saturation without depth falloff",
+      "recommended_fix": "Grade the satellite ~15-20% toward sky value or shrink it to <=40% of the main island",
+      "status": "unresolved"
+    },
+    {
+      "severity": "low",
+      "category": "geometry",
+      "issue": "Six foreground grass tufts share one identical rotation",
+      "evidence": "OBSERVED: identical lean angle across the tuft row at the lower frame edge",
+      "affected_area": "foreground frame edge",
+      "likely_cause": "single tuft instance cloned along the edge",
+      "recommended_fix": "Jitter tuft yaw +/-15-25deg and vary scale 0.8-1.3x",
+      "status": "unresolved"
+    }
+  ],
+  "what_is_working": [
+    "Focal structure proven at 25% shrink; waterfall acts as leading line",
+    "Task inventory exact: main island + waterfall + exactly 3 satellites",
+    "Three-plane value separation without atmospheric band aid"
+  ],
+  "required_changes": [
+    "Optional polish: grade rightmost satellite ~15-20% toward sky value or shrink to <=40% of main island",
+    "Optional polish: jitter foreground tufts +/-15-25deg yaw, scale 0.8-1.3x"
+  ],
+  "references_used": [],
+  "confidence_notes": "reference_similarity not evaluable: original composition with no canonical target. Level 1 only. External reference verification intentionally not used, not unavailable.",
+  "next_action": "accept"
+}

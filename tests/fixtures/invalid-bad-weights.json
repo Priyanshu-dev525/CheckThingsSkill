@@ -1,0 +1,37 @@
+{
+  "status": "rework_required",
+  "score": 6.0,
+  "threshold": 7.0,
+  "iteration": 1,
+  "max_iterations": 5,
+  "evidence_level": "level_1_screenshot_only",
+  "categories": {
+    "silhouette": 6.0,
+    "proportions": 6.0,
+    "structure": 6.0,
+    "geometry": 6.0,
+    "materials": 6.0,
+    "reference_similarity": 6.0,
+    "style": 6.0,
+    "composition": 6.0
+  },
+  "weights": {
+    "silhouette": 0.05,
+    "proportions": 0.15,
+    "structure": 0.15,
+    "geometry": 0.10,
+    "materials": 0.10,
+    "reference_similarity": 0.15,
+    "style": 0.10,
+    "composition": 0.05
+  },
+  "problems": [
+    {
+      "severity": "high",
+      "issue": "Flat lighting hides the left half of the asset",
+      "evidence": "OBSERVED: left half unreadable in the provided render",
+      "recommended_fix": "Add a fill light from the left; re-render"
+    }
+  ],
+  "next_action": "modify_and_rerender"
+}

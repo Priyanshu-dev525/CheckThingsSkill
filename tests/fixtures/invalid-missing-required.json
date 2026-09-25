@@ -1,0 +1,15 @@
+{
+  "asset": "crate prop",
+  "score": 7.5,
+  "threshold": 7.0,
+  "categories": {
+    "silhouette": 8.0,
+    "proportions": 7.5,
+    "structure": 7.5,
+    "geometry": 7.0,
+    "materials": 7.5,
+    "reference_similarity": 7.0,
+    "style": 7.5,
+    "composition": 7.5
+  }
+}

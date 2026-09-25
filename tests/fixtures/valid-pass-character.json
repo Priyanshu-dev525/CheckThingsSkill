@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "asset": "stylized knight character, T-pose",
+  "task_summary": "Create a stylized knight character in T-pose, 6.5 heads tall, game-ready low-poly with clean silhouette, for a top-down action game.",
+  "status": "pass",
+  "score": 7.9,
+  "threshold": 7.0,
+  "iteration": 2,
+  "max_iterations": 5,
+  "previous_score": 5.6,
+  "score_delta": 2.3,
+  "evidence_level": "level_2_screenshot_plus_model_data",
+  "views_analyzed": ["front", "left side", "back"],
+  "categories": {
+    "silhouette": 8.0,
+    "proportions": 8.0,
+    "structure": 7.5,
+    "geometry": 8.0,
+    "materials": 7.5,
+    "reference_similarity": 7.5,
+    "style": 8.5,
+    "composition": 8.0
+  },
+  "weights": {
+    "silhouette": 0.15,
+    "proportions": 0.25,
+    "structure": 0.15,
+    "geometry": 0.10,
+    "materials": 0.05,
+    "reference_similarity": 0.10,
+    "style": 0.10,
+    "composition": 0.10
+  },
+  "custom_weights_rationale": "Character anatomy task with explicit head-count spec: proportions lead at .25.",
+  "penalties": [],
+  "problems": [
+    {
+      "severity": "critical",
+      "category": "geometry",
+      "issue": "Hands intersecting torso (iteration 1)",
+      "evidence": "LEVEL-2 DATA: 0.4 cm clearance; OBSERVED: fingertips no longer enter the hip plates in any view",
+      "recommended_fix": "None — freeze this area",
+      "status": "verified_fixed"
+    },
+    {
+      "severity": "high",
+      "category": "proportions",
+      "issue": "5.5-head body, short arms (iteration 1)",
+      "evidence": "LEVEL-2 DATA: re-measured 6.5:1 (28.2 cm head / 183 cm height); fingertips at mid-thigh",
+      "recommended_fix": "None — freeze proportions",
+      "status": "verified_fixed"
+    },
+    {
+      "severity": "medium",
+      "category": "structure",
+      "issue": "Missing gorget / floating pauldron / clipping boots (iteration 1)",
+      "evidence": "OBSERVED + DATA: gorget present and layered; pauldron class-2; boots class-2",
+      "recommended_fix": "None — freeze these areas",
+      "status": "verified_fixed"
+    },
+    {
+      "severity": "low",
+      "category": "style",
+      "issue": "Cape is perfectly mirrored across the spine",
+      "evidence": "OBSERVED: fold pattern identical left/right in the back view (new visibility after the relight)",
+      "affected_area": "cape",
+      "likely_cause": "mirrored construction",
+      "recommended_fix": "Optional polish: break symmetry with 2-3 asymmetric fold groups",
+      "status": "unresolved"
+    }
+  ],
+  "what_is_working": [
+    "Headline spec met exactly: 6.5:1 by measurement",
+    "Resize did not regress shoulders (the flagged risk): pauldrons and gorget clean",
+    "Relit back capture now reads"
+  ],
+  "required_changes": [],
+  "references_used": [
+    {
+      "title": "Arm-span and reach anatomy sheet",
+      "kind": "diagram",
+      "used_for": "reach verification"
+    },
+    {
+      "title": "Stylized character proportion exemplar (6.5 heads)",
+      "kind": "model_sheet",
+      "used_for": "ratio verification"
+    },
+    {
+      "title": "Medieval plate construction reference",
+      "kind": "diagram",
+      "used_for": "armor layering verification"
+    }
+  ],
+  "confidence_notes": "Level 2 throughout; every headline number comes from model data, not pixels. Cape symmetry is a polish item, not a correctness failure.",
+  "next_action": "accept"
+}

@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Priyanshu-dev525/CheckThingsSkill/blob/main/schemas/visual-verification.schema.json",
+  "title": "VisualVerificationResult",
+  "description": "Machine-readable result of ONE ScreenshotSkill visual verification evaluation. One JSON object per iteration. Consistency rules beyond this schema (weights sum to 1, score equals weighted sum minus penalties, status agrees with score vs threshold, unresolved critical problems block 'pass', iteration <= max_iterations) are enforced by scripts/validate_verification.py and MUST be honored by producers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "score",
+    "threshold",
+    "iteration",
+    "categories",
+    "evidence_level",
+    "problems",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Version of this schema the result was produced against."
+    },
+    "asset": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Short name/description of the asset or scene that was evaluated, e.g. 'low-poly pine tree'."
+    },
+    "task_summary": {
+      "type": "string",
+      "description": "The original user task/request this evaluation checks compliance against. Quote or tightly paraphrase it."
+    },
+    "status": {
+      "description": "Verification decision. 'pass' iff score >= threshold AND no unresolved critical problem; otherwise 'rework_required'.",
+      "enum": ["pass", "rework_required"]
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Final 0-10 score, one decimal: round1(clamp(sum(category*weight) - sum(penalty.points), 0, 10)). Wrong object identity caps this at 2.9."
+    },
+    "threshold": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Acceptance threshold for this task. Default 7.0."
+    },
+    "iteration": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "1-based iteration number of this evaluation. Each iteration must be based on a NEW render produced after a modification."
+    },
+    "max_iterations": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Iteration budget. Default 5 when omitted."
+    },
+    "previous_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Score of the previous iteration, for regression tracking (omit on iteration 1)."
+    },
+    "score_delta": {
+      "type": "number",
+      "minimum": -10,
+      "maximum": 10,
+      "description": "score - previous_score. A near-zero or negative delta demands a different diagnosis, not a reapplied fix."
+    },
+    "evidence_level": {
+      "description": "level_1_screenshot_only: only visible evidence may be claimed. level_2_screenshot_plus_model_data: exact dimensions/topology/transforms/hierarchy claims are additionally allowed.",
+      "enum": ["level_1_screenshot_only", "level_2_screenshot_plus_model_data"]
+    },
+    "views_analyzed": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "description": "The screenshots/views combined in this evaluation, e.g. ['front', 'side', 'three-quarter']. Different cameras of the same asset are one object, not many."
+    },
+    "categories": {
+      "type": "object",
+      "minProperties": 4,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "type": "number", "minimum": 0, "maximum": 10 },
+      "description": "Per-category 0-10 scores. Well-known keys: silhouette, proportions, structure, geometry, materials, reference_similarity, style, composition. Omit a category entirely (and list it in not_evaluable) when it cannot be evaluated from available evidence."
+    },
+    "weights": {
+      "type": "object",
+      "minProperties": 4,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 },
+      "description": "Effective weights applied to the evaluated categories; keys must match categories exactly and values must sum to 1.00 (+/- 0.01). Defaults: silhouette .20, proportions .15, structure .15, geometry .10, materials .10, reference_similarity .15, style .10, composition .05. When omitted, defaults are renormalized over the evaluated categories."
+    },
+    "custom_weights_rationale": {
+      "type": "string",
+      "description": "Required whenever weights differ from the defaults: why this task demands different emphasis (e.g. character anatomy, scene readability, reference reconstruction)."
+    },
+    "not_evaluable": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Categories that could not be evaluated (e.g. ['reference_similarity'] when no reference exists). Their weight is redistributed proportionally over evaluated categories."
+    },
+    "penalties": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/penalty" },
+      "description": "Critical-issue penalties subtracted from the weighted total. Total must not exceed 3.0. Never double-count a problem already fully priced into a category score."
+    },
+    "problems": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/problem" },
+      "description": "All identified problems, ordered by repair priority (see SKILL.md section 8). May be empty only when status is 'pass'."
+    },
+    "what_is_working": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Concrete positive observations, so fixes preserve strengths."
+    },
+    "required_changes": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Specific, actionable changes in universal operations (move/rotate/scale/deform/...), with relative magnitudes when absolute units are unknown."
+    },
+    "references_used": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reference" },
+      "description": "External references that informed the evaluation. Empty (with a note in confidence_notes) when web access was unavailable."
+    },
+    "confidence_notes": {
+      "type": "string",
+      "description": "Explicit statement of evidence limits: hidden areas, resolution limits, unavailable web research, Level 1 vs Level 2 caveats."
+    },
+    "next_action": {
+      "description": "What happens after this evaluation. accept: done. modify_and_rerender: apply required_changes then re-render and re-evaluate. request_more_evidence: need better/more screenshots or data. escalate_to_user: blocked (max iterations, plateau, missing tools) - human decision needed. abort: evaluation impossible.",
+      "enum": ["accept", "modify_and_rerender", "request_more_evidence", "escalate_to_user", "abort"]
+    }
+  },
+  "$defs": {
+    "penalty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issue", "points", "rationale"],
+      "properties": {
+        "issue": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The cross-cutting visible failure being penalized."
+        },
+        "points": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1.5,
+          "description": "Penalty size, 0.25 to 1.5 points."
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Why this penalty is not double-counting a category deduction."
+        }
+      }
+    },
+    "problem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["severity", "issue", "evidence", "recommended_fix"],
+      "properties": {
+        "severity": {
+          "enum": ["critical", "high", "medium", "low"],
+          "description": "critical: blocks PASS regardless of score. high: major visible defect. medium: notable but tolerable. low: polish."
+        },
+        "category": {
+          "type": "string",
+          "description": "Primary category affected, e.g. 'silhouette'."
+        },
+        "issue": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One sentence: what is wrong."
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What is visible that proves it, with a claim label (OBSERVED/INFERRED/REFERENCE-SUPPORTED). Never invent evidence."
+        },
+        "affected_area": {
+          "type": "string",
+          "description": "Where on the asset/frame the problem is located."
+        },
+        "likely_cause": {
+          "type": "string",
+          "description": "INFERRED cause, clearly labeled as such."
+        },
+        "recommended_fix": {
+          "type": "string",
+          "minLength": 1,
+          "description": "RECOMMENDED concrete change in universal operations with relative magnitude."
+        },
+        "status": {
+          "enum": ["unresolved", "addressed", "verified_fixed"],
+          "description": "Regression tracking: unresolved (this render), addressed (a fix was applied, awaiting verification), verified_fixed (confirmed gone in the current render). Omit on first sighting."
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "used_for"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "url": { "type": "string" },
+        "kind": {
+          "enum": ["photo", "diagram", "spec", "artwork", "model_sheet", "other"]
+        },
+        "used_for": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Which conclusions this reference supports (the REFERENCE-SUPPORTED claims)."
+        }
+      }
+    }
+  }
+}

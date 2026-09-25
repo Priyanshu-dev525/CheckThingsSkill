@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "asset": "low-poly stylized pine tree",
+  "task_summary": "Create a low-poly stylized pine tree, game-ready, for a forest scatter system.",
+  "status": "rework_required",
+  "score": 5.2,
+  "threshold": 7.0,
+  "iteration": 1,
+  "max_iterations": 5,
+  "evidence_level": "level_1_screenshot_only",
+  "views_analyzed": ["three-quarter perspective"],
+  "categories": {
+    "silhouette": 4.5,
+    "proportions": 6.0,
+    "structure": 6.5,
+    "geometry": 6.0,
+    "materials": 6.5,
+    "reference_similarity": 4.5,
+    "style": 6.5,
+    "composition": 7.5
+  },
+  "weights": {
+    "silhouette": 0.20,
+    "proportions": 0.15,
+    "structure": 0.15,
+    "geometry": 0.10,
+    "materials": 0.10,
+    "reference_similarity": 0.15,
+    "style": 0.10,
+    "composition": 0.05
+  },
+  "penalties": [
+    {
+      "issue": "Severe deep trunk-foliage intersection (class 5) at 8 contacts, spanning Silhouette and Materials beyond Geometry's weight",
+      "points": 0.5,
+      "rationale": "Category deductions (~0.8 combined) understate a class-5 fault; penalty prices the cross-category severity without re-charging the Geometry deduction."
+    }
+  ],
+  "problems": [
+    {
+      "severity": "critical",
+      "category": "silhouette",
+      "issue": "Crown is radially symmetric: 8 identical evenly-spaced masses around the trunk axis",
+      "evidence": "OBSERVED: mirrored outline and equal spacing in the 3/4 render; INFERRED: array/duplicate placement",
+      "affected_area": "entire crown",
+      "likely_cause": "radial duplicate placement of a single foliage block",
+      "recommended_fix": "Delete 3 of 8 masses; cluster survivors in 2-3 lobes; jitter yaw +/-20-40deg, tilt +/-5-15deg; scale 0.6-1.4x continuous with one hero lobe; move upper-right mass 0.25-0.4 crown radii outward",
+      "status": "unresolved"
+    },
+    {
+      "severity": "high",
+      "category": "geometry",
+      "issue": "Crown masses penetrate the trunk deeply (class 5) at 8 contacts; 2 upper masses detached",
+      "evidence": "OBSERVED: visible cone-through-trunk passage on the left edge and near the tip",
+      "affected_area": "all crown-trunk contacts",
+      "likely_cause": "concentric ring placement with no contact pass",
+      "recommended_fix": "Move each mass outward to shallow class-3 contact; add branch stubs at the 5 most visible contacts",
+      "status": "unresolved"
+    },
+    {
+      "severity": "medium",
+      "category": "proportions",
+      "issue": "Crown too narrow: height:crown about 4.5:1 vs reference range 3-3.5:1",
+      "evidence": "REFERENCE-SUPPORTED (mature pine photo set) for the range; OBSERVED for the 4.5:1 measurement ratio",
+      "affected_area": "overall crown",
+      "likely_cause": "columnar radial layout",
+      "recommended_fix": "Widen crown ~25% at the lower whorl; keep total height",
+      "status": "unresolved"
+    },
+    {
+      "severity": "medium",
+      "category": "materials",
+      "issue": "Single flat crown value; lit and shaded lobes indistinguishable in greyscale",
+      "evidence": "OBSERVED: greyscale collapse of the crown into one mass",
+      "affected_area": "crown material",
+      "likely_cause": "one shared material, no value variation",
+      "recommended_fix": "Assign a second crown material ~15% darker to 2 of 5 lobes",
+      "status": "unresolved"
+    }
+  ],
+  "what_is_working": [
+    "Trunk taper and trunk/crown thickness relationship plausible and on-style",
+    "Verification-quality capture: 70% frame fill, neutral lighting",
+    "Color family matches the brief"
+  ],
+  "required_changes": [
+    "Delete 3 of 8 crown masses; cluster survivors; jitter yaw +/-20-40deg and tilt +/-5-15deg; continuous scale range 0.6-1.4x with one hero lobe",
+    "Move all crown masses to shallow class-3 trunk contact; add branch stubs at 5 visible contacts",
+    "Widen crown ~25% at lower whorl (target ~3.2:1 height:crown)",
+    "Add a second crown material ~15% darker on 2 of 5 lobes"
+  ],
+  "references_used": [
+    {
+      "title": "Mature lodgepole-type pine photo set",
+      "url": "https://www.inaturalist.org/taxa/133796-Pinus-contorta",
+      "kind": "photo",
+      "used_for": "silhouette, height:crown ratio range 3-3.5:1, ragged crown outline"
+    }
+  ],
+  "confidence_notes": "Level 1 only: crown backside, exact penetration depth, and topology are not verifiable from one render.",
+  "next_action": "modify_and_rerender"
+}
